@@ -1,0 +1,85 @@
+{% extends 'auth/main.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div id="auth_content">
+    <main>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                        <div class="card-header"><h3 class="text-center font-weight-light my-4">Sign Up</h3></div>
+                        <div class="card-body">
+                            <form action="{% url 'signup' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-floating mb-3">
+                                    <input type="text" placeholder="username" name="username" class="form-control" id="inputUsername">
+                                    <label for="inputUsername">Username</label>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" name="email" class="form-control" id="inputEmail" placeholder="email">
+                                            <label for="inputEmail">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="tel" name="phone" class="form-control" id="inputPhone" placeholder="phone">
+                                            <label for="inputPhone">Phone</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" name="password" class="form-control" id="inputPassword" placeholder="password">
+                                            <label for="inputPassword">Password</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" name="confirmPass" class="form-control" id="inputConfirmPassword" placeholder="password">
+                                            <label for="inputConfirmPassword">Confirm Password</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
+                                    <input class="btn btn-dark" type="submit" value="Sign Up"></input>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center py-3">
+                            <span class="small">Already have an account? Log in 
+                            <a href="{% url 'login' %}">here</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+    <!-- <form action="signup" method= "POST" >  
+        {% csrf_token %}              
+        <div class="signupBox">
+            <div class="top">
+                
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+
+                <input type="text" placeholder="username" name = "username">
+                <input type="email" placeholder="email" name = "email">
+                <input type="tel" placeholder="phone" name = "phone">
+                <input type="password" placeholder="password" name = "password"> 
+                <input type="password" placeholder="Confirm password" name = "confirmPass">
+                <button type="submit">signup</button>
+        
+            </div>
+            <div class="bottom">
+                Already have an account? Log in
+                <a href="{% url 'login' %}">here</a>
+            </div> -->
+
+{% endblock %}

@@ -1,0 +1,26 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+body {
+  padding-top: 3rem;
+  color: #5a5a5a;
+}
+
+#explore-jumbotron {
+  height: 350px;
+  background-image: url('../images/cover-explore.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  color: white;
+}
+#explore-jumbotron h3 {
+  font-family: 'Permanent Marker', cursive;
+}
+
+.art-img{
+  height: 350px;
+  width: 500px;
+}

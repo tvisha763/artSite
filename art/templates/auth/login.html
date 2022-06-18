@@ -1,0 +1,74 @@
+{% extends 'auth/main.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div id="auth_content">
+    <main>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                        <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                        <div class="card-body">
+                            <form action="{% url 'login' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-floating mb-3">
+                                    <input type="email" name="email" class="form-control" id="inputEmail" placeholder="email">
+                                    <label for="inputEmail">Email</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" name="password" class="form-control" id="inputLoginPassword" placeholder="password">
+                                    <label for="inputLoginPassword">Password</label>
+                                    <div>
+                                        <i class="fa-solid fa-eye-slash pwd-eye" style="display: none;" data-state="0"></i>
+                                        <i class="fa-solid fa-eye pwd-eye" data-state="1"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
+                                    <input class="btn btn-dark" type="submit" value="Login"></input>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center py-3">
+                            <span class="small">Don't have an account? Sign up 
+                            <a href="{% url 'signup' %}">here</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method= "POST" >  
+                {% csrf_token %}  
+                
+                <div class="loginBox">  
+                        
+
+                        <div class="top">
+                            {% for message in messages %}
+                            <div class="alert alert-success">
+                                <a href="#" data-dismiss="alert" class="close"x></a>
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            <input type="email" placeholder="email" name="email">
+                            <input type="password" placeholder="password" name="password"> 
+                            <button id="login" type="submit">login</button>
+                        </div>
+                        <div class="bottom">
+                            Don't have an account? Sign up 
+                            <a href="{% url 'signup' %}">here</a>
+                    
+                        </div>
+                    
+                </div>
+            </form> 
+        </div>
+    </div>
+</div> -->
+{% endblock %}

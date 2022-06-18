@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block title %}Explore{% endblock %}
+{% block content %}
+
+<div class="p-5 mb-5" id="explore-jumbotron">
+  <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+    <form class="w-25">
+      <div class="input-group rounded">
+        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+        <span class="input-group-text bg-dark text-light border-0" id="search-addon">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+    </form>
+    <h3 class="mt-3">Explore</h3>
+  </div>
+</div>
+
+{% endblock %}

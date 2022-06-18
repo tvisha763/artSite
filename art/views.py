@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import User
+from .models import User, Post
 import bcrypt
 import requests
 import urllib
 import os
-
 
 # Create your views here.
 def signup(request):
@@ -50,8 +49,11 @@ def signup(request):
             user.salt = salt
             user.save()
             return redirect('login')
+    else:
+        if request.session.get('logged_in'):
+            return redirect('/')
 
-    return render(request, 'signup.html')
+    return render(request, 'auth/signup.html')
 
 def login(request):
     if request.method == "POST":
@@ -73,11 +75,11 @@ def login(request):
             saved_salt = User.objects.filter(email=email).get().salt.encode("utf8")[2:-1]
             user  = User.objects.filter(email=email).get()
             request.session["username"] = user.username
-
+            request.session['logged_in'] = True
            
             salted_password = bcrypt.hashpw(password, saved_salt)
             if salted_password == saved_hashed_pass:
-                return redirect('home')
+                return redirect('dashboard')
             else:
                 messages.error(request, "Your password is incorrect.")
                 return redirect('login')
@@ -86,12 +88,94 @@ def login(request):
             messages.error(request, "An account with this email does not exist. Please sign up.")
             return redirect('login')
 
-    return render(request, 'login.html')
+    else:
+        if request.session.get('logged_in'):
+            return redirect('/')
+
+    return render(request, 'auth/login.html')
+
+def logout(request):
+    if not request.session.get('logged_in') or not request.session.get('username'):
+        return redirect('/login')
+    else:
+        request.session["username"] = None
+        request.session['logged_in'] = False
+        return redirect('/login')
 
 def home(request):
-    user = User.objects.get(username=request.session["username"])
+    if request.session.get('logged_in'):
+        return redirect('dashboard')
     return render(request, 'home.html')
 
 def post(request):
-    user = User.objects.get(username=request.session["username"])
-    return render(request, 'postArtwork.html')
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    if request.method == "POST":       
+        user = User.objects.get(username=request.session["username"])
+        
+        # Fetching form data
+        image = request.FILES.get('image')
+        title = request.POST.get('title')
+        sale_type = request.POST.get('sale-type')
+        description = request.POST.get('description')
+        listing_price = request.POST.get('listing_price')
+        floor_price = request.POST.get('floor_price')
+        end_date = request.POST.get('end_date')
+
+        if Post.objects.filter(title=title).exists():
+            messages.error(request, "A post with the same title exists. Please try another title.")
+            return redirect('post')
+        if sale_type == "1":
+            inputs = [image, title, sale_type, description, floor_price, end_date]
+            for inp in inputs:
+                if inp == '' or inp == None:
+                    messages.error(request, "Please fill all the boxes.")
+                    return redirect('post')
+            auction = {'latest_bid': None, 'end_date': end_date, 'offers': []}
+            post = Post(image=image, title=title, sale_type=int(sale_type), description=description, 
+                artist=user, price=int(floor_price), auction=auction)
+            post.save()
+        elif sale_type == "2":
+            inputs = [image, title, sale_type, description, listing_price]
+            for inp in inputs:
+                if inp == '' or inp == None:
+                    messages.error(request, "Please fill all the boxes.")
+                    return redirect('post')
+            post = Post(image=image, title=title, sale_type=int(sale_type), description=description, 
+                artist=user, price=int(listing_price))
+            post.save()
+        elif sale_type == "3":
+            inputs = [image, title, sale_type, description]
+            for inp in inputs:
+                if inp == '' or inp == None:
+                    messages.error(request, "Please fill all the boxes.")
+                    return redirect('post')
+            post = Post(image=image, title=title, sale_type=int(sale_type), description=description, 
+                artist=user)
+            post.save()
+        else:
+            messages.error(request, "Choose a type of sale.")
+            return redirect('post')
+        return redirect('explore')
+    else:
+        return render(request, 'postArtwork.html')
+
+
+def dashboard(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    return render(request, 'dashboard.html')
+
+def explore(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    if request.method == "GET":
+        image = request.POST.get("image")
+        title = request.POST.get("title")
+        saleType = request.POST.get("sale_type")
+        print(title, saleType)
+        return render(request, 'explore.html')
+
+
+def show_art(request):
+    return render(request, 'art.html')

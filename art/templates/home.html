@@ -1,12 +1,44 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <p id='test'>Hello {{request.session.username}}</p>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ArtSite</title>
+        <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">
+    </head>
+    <body class="d-flex h-100 text-center text-white">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+          <header class="mb-auto">
+            <div>
+              <h3 class="float-md-start mb-0"><a class="text-white text-decoration-none" href="{% url 'home' %}">ArtSite</a></h3>
+              <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+              </nav>
+            </div>
+          </header>
+
+          <main class="px-3">
+            <h1>ArtSite</h1>
+            <p class="lead intro-text">A place where you can share, collaborate and sell art.</p>
+            <p class="lead">
+              <a href="{% url 'login' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Log In</a>
+            </p>
+          </main>
+
+          <footer class="mt-auto text-white">
+            <p>Developed by <a href="https://github.com/tvisha763" class="fw-bold text-white">@tvisha763</a> and <a href="https://github.com/rohitmendus" class="fw-bold text-white">@rohitmendus</a>.</p>
+          </footer>
+        </div>
+        <!-- <p id='test'>Hello {{request.session.username}}</p>
+        <a href="{% url 'logout' %}">Logout</a> -->
+    </body>
 </html>
