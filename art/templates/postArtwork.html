@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+</head>
+<body>
+    <h1>Input some information to post your art!</h1>
+    
+    <form method="POST" id="form1">
+        {% csrf_token %}
+        <input name="title" type="text" placeholder="Title"/>
+        <input name="img1" type="file"/>
+        <input name="img2" type="file"/>
+        <input name="img3" type="file"/>
+        <input name="img4" type="file"/>
+        <input name="img5" type="file"/>
+        <textarea name="artistStatement" placeholder="Your artist statement(a description of yuor work and inspiration)"></textarea>
+        <select class="type" name="postType">
+            <option value="">
+                --select--
+            </option>
+            <option value="auction">
+                Auction
+            </option>
+            <option value="spotSale">
+                Spot Sale
+            </option>
+            <option value="notSelling">
+                Not For Sale
+            </option>
+        </select>
+        <button class="button1" type="submit">Submit</button>
+    </form>
+    <form method="POST" id="form2">
+        {% csrf_token %}
+        <h1>Auction Details</h1>
+        <label>Floor price: $</label><input type="number" placeholder="USD"/>
+        <label>end date: </label><input type="date"/>
+        <button class="button2" type="submit">Submit</button>
+    </form>
+    <form method="POST" id="form3">
+        {% csrf_token %}
+        <h1>Spot Sale</h1>
+        <label>Listing price: $</label><input type="number" placeholder="USD"/>
+        <button class="button3" type="submit">Submit</button>
+    </form>
+</body>
+</html>
