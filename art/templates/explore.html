@@ -5,16 +5,66 @@
 
 <div class="p-5 mb-5" id="explore-jumbotron">
   <div class="d-flex flex-column h-100 justify-content-center align-items-center">
-    <form class="w-25">
+    <h3 class="mt-3">Explore</h3>
+    <form class="w-25" method="GET" action="{% url 'artSearch' %}">
       <div class="input-group rounded">
-        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+        <input type="search" name="artSearch" class="form-control rounded" placeholder="Search artwork" aria-label="Search" aria-describedby="search-addon" />
         <span class="input-group-text bg-dark text-light border-0" id="search-addon">
-          <i class="fas fa-search"></i>
+          <button type="submit"><i class="fas fa-search"></i></button>
         </span>
       </div>
     </form>
-    <h3 class="mt-3">Explore</h3>
+    <form class="w-25" method="GET" action="{% url 'artistSearch' %}">
+      <div class="input-group rounded">
+        <input type="search" name="artistSearch" class="form-control rounded" placeholder="Search artist" aria-label="Search" aria-describedby="search-addon" />
+        <span class="input-group-text bg-dark text-light border-0" id="search-addon">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </span>
+      </div>
+    </form>
+    <form class="w-25" method="GET" action="{% url 'typeSearch' %}">
+      <div class="input-group rounded">
+        <input type="search" name="typeSearch" class="form-control rounded" placeholder="Search sale type (auction, spot sale, not for sale)" aria-label="Search" aria-describedby="search-addon" />
+        <span class="input-group-text bg-dark text-light border-0" id="search-addon">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </span>
+      </div>
+    </form>
   </div>
+</div>
+
+<div class="main">
+  {% for detail in details %}
+    <h5>{{detail.title}}<h5></h5>
+    <img src="{{detail.img}}">
+    {% if detail.saleType == 1 %}
+      <h6>auction</h6>
+    {% elif detail.saleType == 2 %}
+      <h6>spot sale</h6>
+    {% elif detail.saleType == 3 %}
+      <h6>not for sale</h6>
+    {% endif %}
+    <h6>{{detail.artist}}</h6>
+    {% if detail.saleType == 1 %}
+      <form action="{% url 'show_auction' %}" method="post">
+        {% csrf_token %}
+        <button>View</button>
+        <input type="hidden" value="{{detail.title}}" name="artToView" id="artToView">
+      </form>
+    {% elif detail.saleType == 2 %}
+      <form action="{% url 'show_spot' %}" method="post">
+        {% csrf_token %}
+        <button>View</button>
+        <input type="hidden" value="{{detail.title}}" name="artToView" id="artToView">
+      </form>
+    {% elif detail.saleType == 3 %}
+      <form action="{% url 'show_not_selling' %}" method="post">
+        {% csrf_token %}
+        <button>View</button>
+        <input type="hidden" value="{{detail.title}}" name="artToView" id="artToView">
+      </form>
+    {% endif %}
+  {% endfor %}
 </div>
 
 {% endblock %}

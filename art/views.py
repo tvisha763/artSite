@@ -1,3 +1,5 @@
+from contextvars import Context
+from operator import contains
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import User, Post
@@ -166,16 +168,180 @@ def dashboard(request):
         return redirect('/login')
     return render(request, 'dashboard.html')
 
+global currentPage
+currentPage = ""
+
+def show_auction(request):
+    buttonClicked = request.POST.get("artToView")
+    info = Post.objects.get(title=buttonClicked)
+    print (buttonClicked)
+
+    if info.auction.get("latest_bid") == None:
+        info.auction["latest_bid"] = info.price
+        info.save
+
+    title = info.title
+    print(info.title)
+    context={
+        'title':info.title,
+        'artist':info.artist.username,
+        'image':info.image,
+        'description':info.description,
+        'floor':info.price,
+        'latest':info.auction.get("latest_bid"),
+        'offers':info.auction.get("offers"),
+    }
+    global currentPage
+    currentPage = info.title
+    return render(request, 'artAuction.html', context)
+
+def show_spot(request):
+    buttonClicked = request.POST.get("artToView")
+    info = Post.objects.get(title=buttonClicked)
+    
+    context={
+        'title':info.title,
+        'phone':info.artist.phone,
+        'email':info.artist.email,
+        'artist':info.artist.username,
+        'image':info.image,
+        'description':info.description,
+        'price':info.price,
+    }
+    return render(request, 'artSpot.html', context)
+
+def show_not(request):
+    buttonClicked = request.POST.get("artToView")
+    info = Post.objects.get(title=buttonClicked)
+    
+    context={
+        'title':info.title,
+        'phone':info.artist.phone,
+        'email':info.artist.email,
+        'artist':info.artist.username,
+        'image':info.image,
+        'description':info.description,
+    }
+    return render(request, 'artNot.html', context)
+
 def explore(request):
     if not request.session.get('logged_in'):
         return redirect('/login')
     if request.method == "GET":
-        image = request.POST.get("image")
-        title = request.POST.get("title")
-        saleType = request.POST.get("sale_type")
-        print(title, saleType)
-        return render(request, 'explore.html')
+        info = Post.objects.all()
+        details = []
+        for k in range(len(info)):
+            details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+       
+        
+        context = {
+            "details" : details
+            
+        }
+        return render(request, 'explore.html', context)
+
+def artSearch(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    if request.method == "GET":
+        Searched = request.GET.get("artSearch")
+        print(Searched)
+        info = Post.objects.filter(title__contains=Searched)
+        print(info)
+        details = []
+        for k in range(len(info)):
+            details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+
+        
+        context={'details' : details}
+
+        print(context)
+
+        return render(request, 'explore.html', context)
 
 
-def show_art(request):
-    return render(request, 'art.html')
+def artistSearch(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    if request.method == "GET":
+        Searched = request.GET.get("artistSearch")
+        print(Searched)
+        info = Post.objects.filter(artist__username__contains=Searched)
+        print(info)
+        details = []
+        for k in range(len(info)):
+            details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+
+        
+        context={'details' : details}
+
+        print(context)
+
+        return render(request, 'explore.html', context)
+
+
+def typeSearch(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
+    if request.method == "GET":
+        Searched = request.GET.get("typeSearch")
+        print(Searched)
+        if Searched == "auction":
+            info = Post.objects.filter(sale_type=1)
+            print(info)
+            details = []
+            for k in range(len(info)):
+                details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+
+            
+            context={'details' : details}
+
+            print(context)
+
+            return render(request, 'explore.html', context)
+        if "spot" in Searched:
+            info = Post.objects.filter(sale_type=2)
+            print(info)
+            details = []
+            for k in range(len(info)):
+                details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+
+            
+            context={'details' : details}
+
+            print(context)
+
+            return render(request, 'explore.html', context)
+        if "not" in Searched:
+            info = Post.objects.filter(sale_type=3)
+            print(info)
+            details = []
+            for k in range(len(info)):
+                details.append({'title': info[k].title, 'img': info[k].image, 'saleType': info[k].sale_type, 'artist': info[k].artist})
+
+            
+            context={'details' : details}
+
+            print(context)
+
+            return render(request, 'explore.html', context)
+
+print(currentPage)
+
+def bid(request):
+    buttonClicked = request.POST.get("artToView")
+    print (buttonClicked)
+    # info = Post.objects.get(title=buttonClicked)
+    # info.auction.get("latest_bid")
+    # print(currentPage)
+    # print(info.auction.get("latest_bid"))
+    # context={
+    #     'title':info.title,
+    #     'phone':info.artist.phone,
+    #     'email':info.artist.email,
+    #     'artist':info.artist.username,
+    #     'image':info.image,
+    #     'description':info.description,
+    #     'price':info.price,
+    # }
+    return render(request, 'artAuction.html')

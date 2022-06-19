@@ -23,7 +23,7 @@ class Post(models.Model):
 
     artist = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to="art")
+    image = models.ImageField(upload_to="media")
     description = models.CharField(max_length=500, blank=True)
     sale_type = models.IntegerField(default=3, choices=SALE_CHOICES)
     date_posted = models.DateTimeField(auto_now_add=True)
@@ -32,7 +32,7 @@ class Post(models.Model):
     auction = models.JSONField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.title} - {self.artist}'
+        return f'{self.title} - {self.artist.username}'
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
