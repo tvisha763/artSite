@@ -58,10 +58,12 @@ class Like(models.Model):
     'offers': [
         {
             'user_id': 2,
+            'date': 'yyyy-mm-dd',
             'bid': 45
         },
         {
             'user_id': 3,
+            'date': 'yyyy-mm-dd',
             'bid': 50 # The highest bid
         }
     ]

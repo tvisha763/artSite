@@ -1,9 +1,16 @@
 {% extends 'main.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}{{ art.title|title }}{% endblock %}
 {% block content %}
 
+{% for message in messages %}
+<div class="alert mt-3 alert-warning alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
 <div class="container my-5">
 	<div class="row justify-content-center">
 		<div class="card col-12 shadow-sm">
@@ -26,12 +33,18 @@
 								<div class="col-6">
 									<span>Current Price: ${{ art.auction.latest_bid|default_if_none:art.price }}</span>
 								</div>
+								<div class="col-12 mt-3">
+									<span>End Date: {{ art.auction.end_date|convert_str_date }}</span>
+								</div>
+								<div class="col-12 mt-3">
+									<span class="text-dark">Your last bid was: ${{ user_bid }}</span>
+								</div>
 								<div class="col-12 mb-5 mt-4">
-									<form action="{% url 'bid' %}">
-										<input type="hidden" value="{{title}}" name="artToView" id="artToView">
-										<input type="text" name="bidValue" class="form-control mb-3" placeholder="Place Your Bid">
+									<form action="{% url 'bid' %}" method="POST">
+										{% csrf_token %}
+										<input type="hidden" value="{{ art.id }}" name="art">
+										<input type="number" name="bid" class="form-control mb-3" placeholder="Place Your Bid" required>
 										<input type="submit" value="Bid" class="btn btn-dark w-100">
-										
 									</form>
 								</div>
 								{% elif art.sale_type == 2 %}
@@ -62,9 +75,11 @@
 					<div class="col-md-6 text-center">
 						<h5>by {{ art.artist.username }}</h5>
 						<span class="pe-2 fs-5">
-							<!-- <i class="fa-solid fa-heart"></i> -->
-							<i class="fa-regular fa-heart"></i>
-							<span id="like-number">6</span>
+							<button class="border-0 bg-transparent" id="like-btn" data-state="{% if liked %}1{% else %}0{% endif %}" data-url="{% url 'like_art' %}" data-art="{{ art.id }}">
+								<i class="fa-solid fa-heart" {% if not liked %}style="display: none;"{% endif %} id="unlike"></i>
+								<i class="fa-regular fa-heart" id="like" {% if liked %}style="display: none;"{% endif %}></i>
+							</button>
+							<span id="like-number">{{ no_of_likes }}</span>
 						</span>
 						{% if art.sale_type == 3 %}
 						<span class="text-danger fs-5">(Not for Sale)</span>

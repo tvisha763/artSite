@@ -1,12 +1,15 @@
 from contextvars import Context
 from operator import contains
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import User, Post
+from .models import User, Post, Like, Comment
 import bcrypt
 import requests
 import urllib
 import os
+from datetime import datetime
 
 # Create your views here.
 def signup(request):
@@ -169,8 +172,18 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 def show_art(request, art_id):
+    user = User.objects.get(username=request.session["username"])
     art = Post.objects.get(id=art_id)
-    context = {'art': art}
+    user_bid = 0
+    for i in art.auction['offers']:
+        if i['user_id'] == user.id:
+            if i['bid'] > user_bid:
+                user_bid = i['bid']
+
+    no_of_likes = Like.objects.filter(post=art).count()
+    liked = Like.objects.filter(post=art, user=user).exists()
+
+    context = {'art': art, 'user_bid': user_bid, 'no_of_likes': no_of_likes, 'liked': liked}
     return render(request, 'show_art.html', context)
 
 # def show_auction(request):
@@ -268,19 +281,41 @@ def typeSearch(request):
         return render(request, 'explore.html', context)
 
 def bid(request):
-    buttonClicked = request.POST.get("artToView")
-    print (buttonClicked)
-    # info = Post.objects.get(title=buttonClicked)
-    # info.auction.get("latest_bid")
-    # print(currentPage)
-    # print(info.auction.get("latest_bid"))
-    # context={
-    #     'title':info.title,
-    #     'phone':info.artist.phone,
-    #     'email':info.artist.email,
-    #     'artist':info.artist.username,
-    #     'image':info.image,
-    #     'description':info.description,
-    #     'price':info.price,
-    # }
-    return render(request, 'artAuction.html')
+    if request.method == "POST":
+        art = Post.objects.get(id=request.POST.get('art'))
+        bid = int(request.POST.get('bid'))
+        latest_bid = art.auction['latest_bid']
+        end_date = datetime.strptime(art.auction['end_date'], "%Y-%m-%d")
+        date = datetime.now()
+        if latest_bid ==  None or latest_bid < bid:
+            if date <= end_date:
+                user_id = User.objects.get(username=request.session["username"]).id
+                offer = {'user_id': user_id, 'date': date.strftime("%Y-%m-%d"), 'bid': bid}
+                print(offer)
+                art.auction['latest_bid'] = bid
+                art.auction['offers'].append(offer)
+                art.save()
+                messages.error(request, "Your bid was saved. You will be contacted by the artist.")
+                return redirect(f'/show_art/{art.id}/')
+            else:
+                messages.error(request, "The Auction is finished!")
+                return redirect(f'/show_art/{art.id}/')
+        else:
+            messages.error(request, "Please make a higher bid!")
+            return redirect(f'/show_art/{art.id}/')
+
+@csrf_exempt
+def like_art(request):
+    if request.method == "POST":
+        print(request.POST)
+        user = User.objects.get(username=request.session["username"])
+        art = Post.objects.get(id=request.POST.get('art_id'))
+        if int(request.POST.get('action')) == 1:
+            like = Like(user=user, post=art)
+            like.save()
+        else:
+            like = Like.objects.get(user=user, post=art)
+            like.delete()
+
+        no_of_likes = Like.objects.filter(post=art).count()
+        return JsonResponse({'no_of_likes': no_of_likes})
