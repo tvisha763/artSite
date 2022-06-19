@@ -19,4 +19,5 @@ urlpatterns = [
     path('bid', views.bid, name="bid"),
     path('like_art', views.like_art, name="like_art"),
     path('comment', views.comment, name="comment"),
+    path('delete_post/<int:art_id>/', views.delete_post, name="dlt_post")
 ]

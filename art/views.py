@@ -253,7 +253,8 @@ def explore(request):
     if not request.session.get('logged_in'):
         return redirect('/login')
     if request.method == "GET":
-        info = Post.objects.all()
+        user = User.objects.get(username=request.session["username"])
+        info = Post.objects.exclude(artist=user)
         context = {'details': info}
         return render(request, 'explore.html', context)
 
@@ -262,8 +263,9 @@ def artSearch(request):
         return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("artSearch")
+        user = User.objects.get(username=request.session["username"])
         info = Post.objects.filter(title__contains=Searched)    
-        context={'details' : info}
+        context={'details' : info.exclude(artist=user)}
         return render(request, 'explore.html', context)
 
 
@@ -272,8 +274,9 @@ def artistSearch(request):
         return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("artistSearch")
+        user = User.objects.get(username=request.session["username"])
         info = Post.objects.filter(artist__username__contains=Searched)        
-        context={'details' : info}
+        context={'details' : info.exclude(artist=user)}
         return render(request, 'explore.html', context)
 
 
@@ -282,12 +285,13 @@ def typeSearch(request):
         return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("typeSearch")
+        user = User.objects.get(username=request.session["username"])
         if int(Searched) == 0:
             info = Post.objects.all()
         else:
             info = Post.objects.filter(sale_type=int(Searched))
 
-        context = {'details': info}
+        context = {'details': info.exclude(artist=user)}
         return render(request, 'explore.html', context)
 
 def bid(request):
@@ -304,7 +308,6 @@ def bid(request):
             elif date <= end_date:
                 user_id = User.objects.get(username=request.session["username"]).id
                 offer = {'user_id': user_id, 'date': date.strftime("%Y-%m-%d"), 'bid': bid}
-                print(offer)
                 art.auction['latest_bid'] = bid
                 art.auction['offers'].append(offer)
                 art.save()
@@ -343,3 +346,10 @@ def comment(request):
         comment = Comment(user=user, post=art, text=message)
         comment.save()
         return redirect(f'/show_art/{art.id}/')
+
+def delete_post(request, art_id):
+    if request.method == "GET":
+        art = Post.objects.get(id=art_id)
+        art.delete()
+        messages.error(request, "Art has been deleted!")
+        return redirect("dashboard")

@@ -55,6 +55,18 @@
         <div class="card-body text-center">
           <h5 class="card-title">{{ detail.title|title }}
             <h6>by {{ detail.artist.username }}</h6>
+            <h6>
+                {% if detail.sale_type == 1 %}
+                $
+                {% if detail.auction.latest_bid != None %}
+                {{ detail.auction_latest_bid }}
+                {% else %}
+                {{ detail.price }}
+                {% endif %}
+                {% elif detail.sale_type == 2 %}
+                ${{ detail.price }}
+                {% endif %}
+            </h6>
             <h6 class="text-dark">
             {% if detail.sale_type == 1 %}
               Auction
