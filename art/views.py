@@ -169,7 +169,13 @@ def post(request):
 def dashboard(request):
     if not request.session.get('logged_in'):
         return redirect('/login')
-    return render(request, 'dashboard.html')
+    if request.method == "GET":
+        user=request.session.get('username')
+        info = Post.objects.filter(artist__username=user)        
+        context={'details' : info}
+ 
+
+    return render(request, 'dashboard.html', context)
 
 def show_art(request, art_id):
     user = User.objects.get(username=request.session["username"])
@@ -291,7 +297,10 @@ def bid(request):
         end_date = datetime.strptime(art.auction['end_date'], "%Y-%m-%d")
         date = datetime.now()
         if latest_bid ==  None or latest_bid < bid:
-            if date <= end_date:
+            if bid<=art.price:
+                messages.error(request, "Your bid must be higher than the current price!")
+                return redirect(f'/show_art/{art.id}/')
+            elif date <= end_date:
                 user_id = User.objects.get(username=request.session["username"]).id
                 offer = {'user_id': user_id, 'date': date.strftime("%Y-%m-%d"), 'bid': bid}
                 print(offer)
@@ -301,10 +310,11 @@ def bid(request):
                 messages.error(request, "Your bid was saved. You will be contacted by the artist.")
                 return redirect(f'/show_art/{art.id}/')
             else:
-                messages.error(request, "The Auction is finished!")
+                messages.error(request, "Sorry, bidding closed!")
                 return redirect(f'/show_art/{art.id}/')
+
         else:
-            messages.error(request, "Please make a higher bid!")
+            messages.error(request, "Your bid must be higher than the current price!")
             return redirect(f'/show_art/{art.id}/')
 
 @csrf_exempt
@@ -322,3 +332,13 @@ def like_art(request):
 
         no_of_likes = Like.objects.filter(post=art).count()
         return JsonResponse({'no_of_likes': no_of_likes})
+
+@csrf_exempt
+def comment(request):
+    if request.method == "POST":
+        user = User.objects.get(username=request.session["username"])
+        art = Post.objects.get(id=request.POST.get('art_id'))
+        message = request.POST.get("comment")
+        comment = Comment(user=user, post=art, text=message)
+        no_of_comments = Comment.objects.filter(post=art).count()
+        return JsonResponse({'no_of_comments': no_of_comments})

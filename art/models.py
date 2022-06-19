@@ -49,7 +49,7 @@ class Like(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user
+        return f'{self.post} - {self.user}'
 
 # How the auction field looks like
 '''aution = {

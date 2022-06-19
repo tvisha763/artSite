@@ -2,5 +2,34 @@
 
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+<h1>Your Art</h1>
+ 
+    <div class="container">
+        <div class="row">
+        {% for detail in details %}
+        <div class="col-lg-4 col-md-6 col-12 mb-5">
+            <div class="card shadow-sm" style="width: 18rem;">
+            <img src="{{ detail.image.url }}" class="card-img-top" alt="...">
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ detail.title|title }}
+                <h6>by {{ detail.artist.username }}</h6>
+                <h6 class="text-dark">
+                {% if detail.sale_type == 1 %}
+                    Auction
+                {% elif detail.sale_type == 2 %}
+                    Spot Sale
+                {% elif detail.sale_type == 3 %}
+                    Not for Sale
+                {% endif %}
+                </h6>
+                </h5>
+                <p class="card-text">{{ detail.description }}</p>
+                <a href="{% url 'show_art' detail.id %}" class="btn btn-primary">View</a>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
 
 {% endblock %}
