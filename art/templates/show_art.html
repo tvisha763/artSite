@@ -54,15 +54,27 @@
 									<span>Listing Price: <span class="text-success">${{ art.price }}</span></span>
 								</div>
 								<div class="col-12 text-center mb-4">
-									<span>Contact to buy:</span>
+									<!-- <span>Contact to buy:</span>
 									<span class="d-block text-success">Phone: {{ art.artist.phone }}</span>
-									<span class="d-block text-success">Email: {{ art.artist.email }}</span>
+									<span class="d-block text-success">Email: {{ art.artist.email }}</span> -->
+									<form method="POST" action="{% url 'send_email' %}">
+										{% csrf_token %}
+										<input type="hidden" name="art" value="{{ art.id }}">
+										<input type="hidden" name="sale_type" value="2">
+										<input type="submit" value="Want to Buy" class="btn btn-dark">
+									</form>
 								</div>
 								{% else %}
 								<div class="col-12 text-center mb-4">
-									<span>Contact for commissions:</span>
+									<!-- <span>Contact for commissions:</span>
 									<span class="d-block text-success">Phone: {{ art.artist.phone }}</span>
-									<span class="d-block text-success">Email: {{ art.artist.email }}</span>
+									<span class="d-block text-success">Email: {{ art.artist.email }}</span> -->
+									<form method="POST" action="{% url 'send_email' %}">
+										{% csrf_token %}
+										<input type="hidden" name="art" value="{{ art.id }}">
+										<input type="hidden" name="sale_type" value="3">
+										<input type="submit" value="Contact For Commissions" class="btn btn-dark">
+									</form>
 								</div>
 								{% endif %}
 								<div class="col-12" style="font-size: 0.95em;">

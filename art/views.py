@@ -11,6 +11,10 @@ import urllib
 import os
 from datetime import datetime
 
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+
 # Create your views here.
 def signup(request):
     if request.method == "POST":
@@ -196,58 +200,6 @@ def show_art(request, art_id):
 
     return render(request, 'show_art.html', context)
 
-# def show_auction(request):
-#     buttonClicked = request.POST.get("artToView")
-#     info = Post.objects.get(title=buttonClicked)
-#     print (buttonClicked)
-
-#     if info.auction.get("latest_bid") == None:
-#         info.auction["latest_bid"] = info.price
-#         info.save
-
-#     title = info.title
-#     print(info.title)
-#     context={
-#         'title':info.title,
-#         'artist':info.artist.username,
-#         'image':info.image,
-#         'description':info.description,
-#         'floor':info.price,
-#         'latest':info.auction.get("latest_bid"),
-#         'offers':info.auction.get("offers"),
-#     }
-#     global currentPage
-#     currentPage = info.title
-#     return render(request, 'artAuction.html', context)
-
-# def show_spot(request):
-#     buttonClicked = request.POST.get("artToView")
-#     info = Post.objects.get(title=buttonClicked)
-    
-#     context={
-#         'title':info.title,
-#         'phone':info.artist.phone,
-#         'email':info.artist.email,
-#         'artist':info.artist.username,
-#         'image':info.image,
-#         'description':info.description,
-#         'price':info.price,
-#     }
-#     return render(request, 'artSpot.html', context)
-
-# def show_not(request):
-#     buttonClicked = request.POST.get("artToView")
-#     info = Post.objects.get(title=buttonClicked)
-    
-#     context={
-#         'title':info.title,
-#         'phone':info.artist.phone,
-#         'email':info.artist.email,
-#         'artist':info.artist.username,
-#         'image':info.image,
-#         'description':info.description,
-#     }
-#     return render(request, 'artNot.html', context)
 
 def explore(request):
     if not request.session.get('logged_in'):
@@ -306,11 +258,20 @@ def bid(request):
                 messages.error(request, "Your bid must be higher than the current price!")
                 return redirect(f'/show_art/{art.id}/')
             elif date <= end_date:
-                user_id = User.objects.get(username=request.session["username"]).id
-                offer = {'user_id': user_id, 'date': date.strftime("%Y-%m-%d"), 'bid': bid}
+                user = User.objects.get(username=request.session["username"])
+                offer = {'user_id': user.id, 'date': date.strftime("%Y-%m-%d"), 'bid': bid}
                 art.auction['latest_bid'] = bid
                 art.auction['offers'].append(offer)
                 art.save()
+
+                # Sending Mail
+                context = {'user': user, 'artist': art.artist, 'art': art, 'last_bid': latest_bid}
+                message = render_to_string('email3.html', context) 
+                subject = f'{user.username} is has placed a bid in your Art!'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [art.artist.email,]
+                send_mail(subject, message, email_from, recipient_list)
+
                 messages.error(request, "Your bid was saved. You will be contacted by the artist.")
                 return redirect(f'/show_art/{art.id}/')
             else:
@@ -324,7 +285,6 @@ def bid(request):
 @csrf_exempt
 def like_art(request):
     if request.method == "POST":
-        print(request.POST)
         user = User.objects.get(username=request.session["username"])
         art = Post.objects.get(id=request.POST.get('art_id'))
         if int(request.POST.get('action')) == 1:
@@ -353,3 +313,24 @@ def delete_post(request, art_id):
         art.delete()
         messages.error(request, "Art has been deleted!")
         return redirect("dashboard")
+
+def send_email(request):
+    if request.method == "POST":
+        art = Post.objects.get(id=request.POST.get('art'))
+        user = User.objects.get(username=request.session["username"])
+        sale_type = request.POST.get('sale_type')
+        if sale_type == "2":
+            context = {'user': user, 'artist': art.artist, 'art': art}
+            message = render_to_string('email1.html', context)
+        elif sale_type == "3":
+            context = {'user': user, 'artist': art.artist, 'art': art}
+            message = render_to_string('email2.html', context)
+
+        subject = f'{user.username} is interested in your Art!'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [art.artist.email,]
+        send_mail(subject, message, email_from, recipient_list)
+
+
+        messages.error(request, "The Artist will be notified of your request!") 
+        return redirect(f'/show_art/{art.id}/')
