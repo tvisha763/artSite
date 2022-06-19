@@ -36,9 +36,11 @@
 								<div class="col-12 mt-3">
 									<span>End Date: {{ art.auction.end_date|convert_str_date }}</span>
 								</div>
+								{% if user_bid != 0 %}
 								<div class="col-12 mt-3">
 									<span class="text-dark">Your last bid was: ${{ user_bid }}</span>
 								</div>
+								{% endif %}
 								<div class="col-12 mb-5 mt-4">
 									<form action="{% url 'bid' %}" method="POST">
 										{% csrf_token %}
