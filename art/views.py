@@ -173,17 +173,20 @@ def dashboard(request):
 
 def show_art(request, art_id):
     user = User.objects.get(username=request.session["username"])
-    art = Post.objects.get(id=art_id)
-    user_bid = 0
-    for i in art.auction['offers']:
-        if i['user_id'] == user.id:
-            if i['bid'] > user_bid:
-                user_bid = i['bid']
 
+    art = Post.objects.get(id=art_id)
     no_of_likes = Like.objects.filter(post=art).count()
     liked = Like.objects.filter(post=art, user=user).exists()
 
-    context = {'art': art, 'user_bid': user_bid, 'no_of_likes': no_of_likes, 'liked': liked}
+    context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art}
+    if art.auction != None:
+        user_bid = 0
+        for i in art.auction['offers']:
+            if i['user_id'] == user.id:
+                if i['bid'] > user_bid:
+                    user_bid = i['bid']
+        context['user_bid'] = user_bid
+
     return render(request, 'show_art.html', context)
 
 # def show_auction(request):
