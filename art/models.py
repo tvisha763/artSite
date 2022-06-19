@@ -23,7 +23,7 @@ class Post(models.Model):
 
     artist = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to="media")
+    image = models.ImageField(upload_to="art")
     description = models.CharField(max_length=500, blank=True)
     sale_type = models.IntegerField(default=3, choices=SALE_CHOICES)
     date_posted = models.DateTimeField(auto_now_add=True)

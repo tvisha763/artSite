@@ -21,6 +21,8 @@ body {
 }
 
 .art-img{
-  height: 350px;
-  width: 500px;
+  min-height: 150px;
+  min-width: 300px;
+  max-width: 500px;
+  max-height: 500px;
 }
