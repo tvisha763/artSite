@@ -183,8 +183,9 @@ def show_art(request, art_id):
     art = Post.objects.get(id=art_id)
     no_of_likes = Like.objects.filter(post=art).count()
     liked = Like.objects.filter(post=art, user=user).exists()
+    comments = Comment.objects.filter(post=art)
 
-    context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art}
+    context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art, 'comments': comments}
     if art.auction != None:
         user_bid = 0
         for i in art.auction['offers']:
@@ -337,8 +338,8 @@ def like_art(request):
 def comment(request):
     if request.method == "POST":
         user = User.objects.get(username=request.session["username"])
-        art = Post.objects.get(id=request.POST.get('art_id'))
+        art = Post.objects.get(id=request.POST.get('art'))
         message = request.POST.get("comment")
         comment = Comment(user=user, post=art, text=message)
-        no_of_comments = Comment.objects.filter(post=art).count()
-        return JsonResponse({'no_of_comments': no_of_comments})
+        comment.save()
+        return redirect(f'/show_art/{art.id}/')
