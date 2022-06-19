@@ -17,4 +17,5 @@ urlpatterns = [
     path('artistSearch', views.artistSearch, name="artistSearch"),
     path('typeSearch', views.typeSearch, name="typeSearch"),
     path('bid', views.bid, name="bid"),
+    path('like_art', views.like_art, name="like_art"),
 ]

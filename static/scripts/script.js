@@ -23,4 +23,36 @@ $(document).ready(function(){
             $('#spot-sale').hide()
         }
     });
+
+    $('#like-btn').click(function(){
+        const state = $(this).data('state');
+        const url = $(this).data('url');
+        const art_id = $(this).data('art');
+        if (state == "0") {
+            $('#like').hide()
+            $('#unlike').show()
+            $(this).data('state', "1");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {'action': 1, 'art_id': art_id},
+                success: function(response){
+                    $('#like-number').html(response.no_of_likes)
+                }
+            });
+
+        } else {
+            $('#like').show()
+            $('#unlike').hide()
+            $(this).data('state', "0");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {'action': 0, 'art_id': art_id},
+                success: function(response){
+                    $('#like-number').html(response.no_of_likes)
+                }
+            });
+        }
+    });
 });
