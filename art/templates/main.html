@@ -10,9 +10,24 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/mainfile.css' %}">
 </head>
+
+
 <body>
+
+	<style>
+		/* Hiding scrollbar for Chrome, Safari and Opera */
+		#block::-webkit-scrollbar {
+			display: none;
+		}
+
+		/* Hiding scrollbar for IE, Edge and Firefox */
+		#block {
+		scrollbar-width: none;  /* Firefox */
+		-ms-overflow-style: none;  /* IE and Edge */
+		}
+	</style>
 	<header>
 	  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	    <div class="container-fluid">
@@ -41,21 +56,24 @@
 	</header>
 
 	<main>
-	  {% block content %}
-	  {% endblock %}
+	<div id="block" style="height: 571px; overflow-y: scroll;" >
+		{% block content %}
+	  	{% endblock %}
+	</div>
+	  
 	</main>
 
 	<div>
-        <footer class="bg-dark text-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+        <footer class="bg-dark text-white d-flex flex-wrap justify-content-between align-items-center py-3 " >
             <div class="col-md-4 d-flex align-items-center">
               <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-                <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+                <svg class="bi" width="30" height="15"><use xlink:href="#bootstrap"/></svg>
               </a>
               <span class="text-white">&copy; 2022 Citadel Arts</span>
             </div>
 
             <div class="mx-3">
-              <a href="https://github.com/tvisha763/artSite" class="me-2 text-reset">
+              <a href="https://github.com/tvisha763/artSite" class="me-2 text-reset" style="text-decoration: none;">
                 <i class="fa-brands fa-github"></i>
               </a>
               <span>Developed By <a href="https://github.com/tvisha763" class="text-decoration-none">@tvisha763</a> and <a href="https://github.com/rohitmendus" class="text-decoration-none">@rohitmendus</a></span>

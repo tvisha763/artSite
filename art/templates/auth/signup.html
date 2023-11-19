@@ -13,6 +13,12 @@
                         <div class="card-body">
                             <form action="{% url 'signup' %}" method="POST">
                                 {% csrf_token %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
                                 <div class="form-floating mb-3">
                                     <input type="text" placeholder="username" name="username" class="form-control" id="inputUsername">
                                     <label for="inputUsername">Username</label>

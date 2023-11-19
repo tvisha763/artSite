@@ -14,12 +14,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'styles/auth.css' %}">
     </head>
     <body class="bg-dark">
-        {% for message in messages %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
+        
         <div id="auth">
             {% block content %}
             {% endblock %}
@@ -33,10 +28,10 @@
                     </div>
 
                     <div class="mx-3">
-                      <a href="https://github.com/tvisha763/artSite" class="me-2 text-reset">
+                      <a href="https://github.com/tvisha763/artSite" class="me-2 text-reset" class="text-decoration-none" style="text-decoration: none;">
                         <i class="fa-brands fa-github"></i>
                       </a>
-                      <span>Developed By <a href="https://github.com/tvisha763" class="text-decoration-none">@tvisha763</a> and <a href="https://github.com/rohitmendus">@rohitmendus</a></span>
+                      <span>Developed By <a href="https://github.com/tvisha763" class="text-decoration-none">@tvisha763</a> and <a href="https://github.com/rohitmendus"class="text-decoration-none">@rohitmendus</a></span>
                     </div>
                 </footer>
             </div>

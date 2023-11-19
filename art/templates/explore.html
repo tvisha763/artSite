@@ -3,11 +3,33 @@
 {% block title %}Explore{% endblock %}
 {% block content %}
 
+<style>
+  br.responsive {
+    display:block; 
+  }
+
+  form{
+    display: block;
+  }
+  
+  @media (min-width: 500px) { 
+    br.responsive {
+      display: none; 
+    }
+    form{
+      display: inline-block;
+    }
+  }
+
+
+
+</style>
+
 <div class="p-5 mb-5" id="explore-jumbotron">
-  <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+  <div class="d-flex flex-column h-100 justify-content-center; align-items-center">
     <h3 class="mt-3">Explore</h3>
-    <div class="d-flex justify-content-center">
-      <form class="w-50 mx-4" method="GET" action="{% url 'artSearch' %}">
+    <div class="d-flex justify-content-center" style="display: flexbox; justify-content: space-between;">
+      <form class="w-75 mx-4" method="GET" action="{% url 'artSearch' %}">
         <div class="input-group rounded">
           <input type="search" name="artSearch" class="form-control rounded" placeholder="Search Artwork" aria-label="Search" aria-describedby="search-addon" />
           <span class="input-group-text bg-dark text-light border-0" id="search-addon">
@@ -15,7 +37,8 @@
           </span>
         </div>
       </form>
-      <form class="w-50 mx-4" method="GET" action="{% url 'artistSearch' %}">
+      <br class="mobile-br">
+      <form class="w-75 mx-4" method="GET" action="{% url 'artistSearch' %}">
         <div class="input-group rounded">
           <input type="search" name="artistSearch" class="form-control rounded" placeholder="Search Artist" aria-label="Search" aria-describedby="search-addon" />
           <span class="input-group-text bg-dark text-light border-0" id="search-addon">
@@ -23,11 +46,13 @@
           </span>
         </div>
       </form>
-    </div>
-    <div class="d-flex mt-3 justify-content-center align-items-center">
-      <form class="w-100" method="GET" action="{% url 'typeSearch' %}">
+      <br class="mobile-br">
+
+    <!-- </div>
+    <div class="d-flex mt-3 justify-content-center align-items-center"> -->
+      <form class="w-75" method="GET" action="{% url 'typeSearch' %}">
         <div class="input-group rounded">
-          <select class="form-select" name="typeSearch">
+          <select class="form-select " name="typeSearch">
             <option value="0">--select--</option>
             <option value="1">Auction</option>
             <option value="2">Spot Sale</option>
@@ -35,7 +60,7 @@
           </select>
           <!-- <input type="search" name="typeSearch" class="form-control rounded" placeholder="Search sale type (auction, spot sale, not for sale)" aria-label="Search" aria-describedby="search-addon" /> -->
           <span class="input-group-text bg-dark text-light border-0" id="search-addon">
-            <button type="submit" class="bg-dark text-light border-0">Fillter</button>
+            <button type="submit" class="bg-dark text-light border-0">Filter</button>
           </span>
         </div>
       </form>
@@ -50,21 +75,20 @@
   <div class="row">
     {% for detail in details %}
     <div class="col-lg-4 col-md-6 col-12 mb-5">
-      <div class="card shadow-sm" style="width: 18rem;">
+      <div class="card shadow" style="width: 18rem;">
         <img src="{{ detail.image.url }}" class="card-img-top" alt="...">
         <div class="card-body text-center">
           <h5 class="card-title">{{ detail.title|title }}
             <h6>by {{ detail.artist.username }}</h6>
             <h6>
                 {% if detail.sale_type == 1 %}
-                $
-                {% if detail.auction.latest_bid != None %}
-                {{ detail.auction_latest_bid }}
-                {% else %}
-                {{ detail.price }}
+                  {% if detail.auction.latest_bid != None %}
+                    ${{ detail.auction.latest_bid }}
+                  {% else %}
+                    ${{ detail.price }}
                 {% endif %}
                 {% elif detail.sale_type == 2 %}
-                ${{ detail.price }}
+                  ${{ detail.price }}
                 {% endif %}
             </h6>
             <h6 class="text-dark">
@@ -77,9 +101,9 @@
             {% endif %}
             </h6>
           </h5>
-          <p class="card-text">{{ detail.description }}</p>
-          <a href="{% url 'show_art' detail.id %}" class="btn btn-primary">View</a>
+          
         </div>
+        <a href="{% url 'show_art' detail.id %}" style="border-top-left-radius: 0px; border-top-right-radius: 0px"; class="btn btn-primary">View</a>
       </div>
     </div>
     {% endfor %}

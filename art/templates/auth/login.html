@@ -3,6 +3,8 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<br>
+<br>
 <div id="auth_content">
     <main>
         <div class="container">
@@ -13,6 +15,12 @@
                         <div class="card-body">
                             <form action="{% url 'login' %}" method="POST">
                                 {% csrf_token %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
                                 <div class="form-floating mb-3">
                                     <input type="email" name="email" class="form-control" id="inputEmail" placeholder="email">
                                     <label for="inputEmail">Email</label>

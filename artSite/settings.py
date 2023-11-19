@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ifr8txubq0xf%5p0&%(e-p*$3d)s)6$c=*-=(uk0*797-px^ww
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -130,10 +130,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'citadelarts.tr@gmail.com'
-EMAIL_HOST_PASSWORD = '*********'
+EMAIL_HOST_USER = 'citadelarts.tcrm@gmail.com'
+EMAIL_HOST_PASSWORD = 'jxcz dfdw goep hvrn'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+BASE_COUNTRY = "USA"
+CSRF_TRUSTED_ORIGINS = ["https://citadel-arts-3ce48ea333ba.herokuapp.com/"]
+import django_heroku
+django_heroku.settings(locals())

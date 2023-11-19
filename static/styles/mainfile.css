@@ -1,28 +1,32 @@
 /* GLOBAL STYLES
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Young+Serif&display=swap');
 
 body {
   padding-top: 3rem;
   color: #5a5a5a;
 }
 
-#explore-jumbotron {
-  height: 350px;
+#explore-jumbotron h3 {
+    font-family: 'Young Serif', cursive;
+    font-size: 60px;
+    margin-bottom: 40px;
+}
+#explore-jumbotron{
   background-image: url('../images/cover-explore.jpg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
   color: white;
 }
-#explore-jumbotron h3 {
-  font-family: 'Permanent Marker', cursive;
-}
+
 
 .art-img{
-  min-height: 150px;
-  min-width: 300px;
-  max-width: 500px;
-  max-height: 500px;
+  /* min-height: 150px; */
+  min-width: auto;
+  height: auto;
+  /* max-height: 500px; */
 }
+
+
