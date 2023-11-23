@@ -185,36 +185,42 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 def show_art(request, art_id):
-    user = User.objects.get(username=request.session["username"])
+    if not request.session.get('logged_in'):
+        art = Post.objects.get(id=art_id)
+        no_of_likes = Like.objects.filter(post=art).count()
+        liked = False
+        comments = Comment.objects.filter(post=art)
 
-    art = Post.objects.get(id=art_id)
-    no_of_likes = Like.objects.filter(post=art).count()
-    liked = Like.objects.filter(post=art, user=user).exists()
-    comments = Comment.objects.filter(post=art)
+        context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art, 'comments': comments, 'user_bid': 0, 'loggedIn': False}
 
-    context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art, 'comments': comments}
-    if art.auction != None:
-        user_bid = 0
-        for i in art.auction['offers']:
-            if i['user_id'] == user.id:
-                if i['bid'] > user_bid:
-                    user_bid = i['bid']
-        context['user_bid'] = user_bid
+        return render(request, 'show_art.html', context)
+    else:
+        user = User.objects.get(username=request.session["username"])
 
-    return render(request, 'show_art.html', context)
+        art = Post.objects.get(id=art_id)
+        no_of_likes = Like.objects.filter(post=art).count()
+        liked = Like.objects.filter(post=art, user=user).exists()
+        comments = Comment.objects.filter(post=art)
+
+        context = {'no_of_likes': no_of_likes, 'liked': liked, 'art': art, 'comments': comments, 'loggedIn': True}
+        if art.auction != None:
+            user_bid = 0
+            for i in art.auction['offers']:
+                if i['user_id'] == user.id:
+                    if i['bid'] > user_bid:
+                        user_bid = i['bid']
+            context['user_bid'] = user_bid
+
+        return render(request, 'show_art.html', context)
 
 
 def explore(request):
-    if not request.session.get('logged_in'):
-        return redirect('/login')
     if request.method == "GET":
         info = Post.objects.all()
         context = {'details': info}
         return render(request, 'explore.html', context)
 
 def artSearch(request):
-    if not request.session.get('logged_in'):
-        return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("artSearch")
         user = User.objects.get(username=request.session["username"])
@@ -224,8 +230,6 @@ def artSearch(request):
 
 
 def artistSearch(request):
-    if not request.session.get('logged_in'):
-        return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("artistSearch")
         user = User.objects.get(username=request.session["username"])
@@ -235,8 +239,6 @@ def artistSearch(request):
 
 
 def typeSearch(request):
-    if not request.session.get('logged_in'):
-        return redirect('/login')
     if request.method == "GET":
         Searched = request.GET.get("typeSearch")
         user = User.objects.get(username=request.session["username"])
@@ -249,6 +251,8 @@ def typeSearch(request):
         return render(request, 'explore.html', context)
 
 def bid(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
     if request.method == "POST":
         art = Post.objects.get(id=request.POST.get('art'))
         bid = int(request.POST.get('bid'))
@@ -286,7 +290,11 @@ def bid(request):
 
 @csrf_exempt
 def like_art(request):
+    if not request.session.get('logged_in'):
+        return redirect('login')
     if request.method == "POST":
+        if not request.session.get('logged_in'):
+            return redirect('login')
         user = User.objects.get(username=request.session["username"])
         art = Post.objects.get(id=request.POST.get('art_id'))
         if int(request.POST.get('action')) == 1:
@@ -301,6 +309,8 @@ def like_art(request):
 
 @csrf_exempt
 def comment(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
     if request.method == "POST":
         user = User.objects.get(username=request.session["username"])
         art = Post.objects.get(id=request.POST.get('art'))
