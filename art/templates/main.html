@@ -49,9 +49,16 @@
 		  <li class="nav-item">
 	            <a class="nav-link" href="https://www.ups.com/ship/guided/origin?tx=87755277275499832&loc=en_US&WT.srch=1">Create UPS Shipping Label</a>
 	          </li>
-	          <li class="nav-item">
-	            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-	          </li>
+	          {% if request.session.logged_in%}
+		          <li class="nav-item">
+		            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+		          </li>
+		  {% endif %}
+		  {% if not request.session.logged_in%}
+		          <li class="nav-item">
+		            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+		          </li>
+		  {% endif %}
 	        </ul>
 	      </div>
 	    </div>
