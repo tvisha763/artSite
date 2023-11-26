@@ -327,6 +327,8 @@ def delete_post(request, art_id):
         return redirect("dashboard")
 
 def send_email(request):
+    if not request.session.get('logged_in'):
+        return redirect('/login')
     if request.method == "POST":
         art = Post.objects.get(id=request.POST.get('art'))
         user = User.objects.get(username=request.session["username"])
